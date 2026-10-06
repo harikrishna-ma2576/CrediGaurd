@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block title %}Credit Risk Prediction - CrediGuard{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10 col-xl-9">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold mb-1"><i class="fa-solid fa-brain text-primary me-2"></i>Machine Learning Credit Risk Assessment</h2>
+                <p class="text-muted mb-0">Evaluate credit risk for <strong>{{ application.full_name }}</strong> (App ID #{{ application.id }}).</p>
+            </div>
+            <a href="{{ url_for('application_details', app_id=application.id) }}" class="btn btn-outline-secondary">
+                <i class="fa-solid fa-arrow-left me-1"></i> Applicant Profile
+            </a>
+        </div>
+
+        <!-- Applicant Summary Card -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white py-3 fw-bold d-flex align-items-center justify-content-between">
+                <div><i class="fa-solid fa-id-card text-primary me-2"></i>Applicant Features Overview</div>
+                <span class="badge bg-light text-dark border">ID #{{ application.id }}</span>
+            </div>
+            <div class="card-body bg-light">
+                <div class="row g-3">
+                    <div class="col-md-3 col-6">
+                        <div class="info-label">Name & Age</div>
+                        <div class="info-value">{{ application.full_name }} ({{ application.age }} yrs)</div>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <div class="info-label">Employment</div>
+                        <div class="info-value">{{ application.employment_status }} ({{ application.employment_years }} yrs)</div>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <div class="info-label">Annual Income</div>
+                        <div class="info-value text-success fw-bold">{{ application.annual_income | format_currency }}</div>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <div class="info-label">Requested Loan</div>
+                        <div class="info-value text-primary fw-bold">{{ application.loan_amount | format_currency }}</div>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <div class="info-label">Existing Debt</div>
+                        <div class="info-value text-danger fw-semibold">{{ application.existing_debt | format_currency }}</div>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <div class="info-label">DTI Proxy</div>
+                        <div class="info-value">
+                            <span class="badge {% if application.debt_to_income_ratio > 35 %}bg-danger-subtle text-danger{% elif application.debt_to_income_ratio > 20 %}bg-warning-subtle text-warning-emphasis{% else %}bg-success-subtle text-success{% endif %}">
+                                {{ application.debt_to_income_ratio }}%
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <div class="info-label">Credit History</div>
+                        <div class="info-value">{{ application.credit_history_years }} Years</div>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <div class="info-label">Payment History</div>
+                        <div class="info-value fw-semibold">{{ application.previous_payment_history }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-white text-end py-3">
+                <form method="POST" action="{{ url_for('predict', app_id=application.id) }}" class="d-inline">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <button type="submit" class="btn btn-primary px-4 shadow-sm fw-bold">
+                        <i class="fa-solid fa-calculator me-1"></i> Execute Risk Prediction
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Prediction Result Display -->
+        {% if result %}
+        <div class="card shadow-sm mb-4 border-2 {% if result.predicted_risk == 'Low Risk' %}border-success{% elif result.predicted_risk == 'Medium Risk' %}border-warning{% else %}border-danger{% endif %}">
+            <div class="card-header bg-white py-3 fw-bold d-flex align-items-center justify-content-between">
+                <div><i class="fa-solid fa-chart-column text-primary me-2"></i>Machine Learning Assessment Output</div>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle"><i class="fa-solid fa-microchip me-1"></i>{{ result.model_version }}</span>
+            </div>
+            <div class="card-body p-4">
+                <div class="row align-items-center g-4">
+                    <!-- Left Column: Big Risk Indicator -->
+                    <div class="col-md-5 text-center border-end-md">
+                        <div class="text-muted small text-uppercase mb-2 fw-bold">Predicted Risk Category</div>
+                        
+                        {% if result.predicted_risk == 'Low Risk' %}
+                            <div class="p-4 rounded-3 bg-success-subtle text-success border border-success">
+                                <i class="fa-solid fa-shield-check fs-1 mb-2 d-block"></i>
+                                <h2 class="fw-bold mb-1">LOW RISK</h2>
+                                <p class="mb-0 small text-success-emphasis">Favorable Financial & Credit Profile</p>
+                            </div>
+                        {% elif result.predicted_risk == 'Medium Risk' %}
+                            <div class="p-4 rounded-3 bg-warning-subtle text-warning-emphasis border border-warning">
+                                <i class="fa-solid fa-triangle-exclamation fs-1 mb-2 d-block"></i>
+                                <h2 class="fw-bold mb-1">MEDIUM RISK</h2>
+                                <p class="mb-0 small text-warning-emphasis">Moderate Risk - Enhanced Review Recommended</p>
+                            </div>
+                        {% else %}
+                            <div class="p-4 rounded-3 bg-danger-subtle text-danger border border-danger">
+                                <i class="fa-solid fa-circle-exclamation fs-1 mb-2 d-block"></i>
+                                <h2 class="fw-bold mb-1">HIGH RISK</h2>
+                                <p class="mb-0 small text-danger-emphasis">Elevated Risk of Default</p>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Right Column: Probabilities Breakdown Chart -->
+                    <div class="col-md-7">
+                        <h6 class="fw-bold mb-3"><i class="fa-solid fa-chart-bar me-1"></i> Class Estimated Probabilities</h6>
+                        <div class="position-relative" style="height: 180px;">
+                            <canvas id="predictionProbabilityChart"></canvas>
+                        </div>
+                        <div class="row text-center mt-3 g-2">
+                            <div class="col-4">
+                                <div class="p-2 rounded bg-success-subtle border border-success-subtle">
+                                    <div class="small text-success fw-bold">Low Risk</div>
+                                    <div class="fs-5 fw-bold text-dark">{{ result.low_probability }}%</div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="p-2 rounded bg-warning-subtle border border-warning-subtle">
+                                    <div class="small text-warning-emphasis fw-bold">Medium Risk</div>
+                                    <div class="fs-5 fw-bold text-dark">{{ result.medium_probability }}%</div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="p-2 rounded bg-danger-subtle border border-danger-subtle">
+                                    <div class="small text-danger fw-bold">High Risk</div>
+                                    <div class="fs-5 fw-bold text-dark">{{ result.high_probability }}%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="card shadow-sm p-5 text-center text-muted">
+            <i class="fa-solid fa-microchip fs-1 text-primary mb-3"></i>
+            <h4>Ready to Predict Credit Risk</h4>
+            <p class="mb-3">Click the <strong>Predict Credit Risk</strong> button above to run the Random Forest model on this applicant's profile.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% if result %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        renderPredictionProbabilityChart(
+            {{ result.low_probability }},
+            {{ result.medium_probability }},
+            {{ result.high_probability }}
+        );
+    });
+</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}Add Application - CrediGuard{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10 col-xl-9">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold mb-1"><i class="fa-solid fa-user-plus text-primary me-2"></i>New Credit Application</h2>
+                <p class="text-muted mb-0">Fill in applicant personal, employment, and financial details to record a new application.</p>
+            </div>
+            <a href="{{ url_for('list_applications') }}" class="btn btn-outline-secondary">
+                <i class="fa-solid fa-arrow-left me-1"></i> Back to List
+            </a>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-body p-4">
+                <form method="POST" action="{{ url_for('add_application') }}" id="appForm">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    
+                    <!-- Section 1: Personal Information -->
+                    <div class="profile-section-title d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-user text-primary"></i> Personal Information
+                    </div>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="full_name" class="form-label">Full Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="full_name" name="full_name" required placeholder="e.g. Hari Krishna" value="{{ form_data.get('full_name', '') }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="age" class="form-label">Age (Years) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="age" name="age" min="18" max="100" required placeholder="18 - 100" value="{{ form_data.get('age', '') }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="gender" class="form-label">Gender <span class="text-danger">*</span></label>
+                            <select class="form-select" id="gender" name="gender" required>
+                                <option value="" disabled selected>Select Gender</option>
+                                <option value="Male" {% if form_data.get('gender') == 'Male' %}selected{% endif %}>Male</option>
+                                <option value="Female" {% if form_data.get('gender') == 'Female' %}selected{% endif %}>Female</option>
+                                <option value="Other" {% if form_data.get('gender') == 'Other' %}selected{% endif %}>Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Employment Information -->
+                    <div class="profile-section-title d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-briefcase text-primary"></i> Employment Details
+                    </div>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="employment_status" class="form-label">Employment Status <span class="text-danger">*</span></label>
+                            <select class="form-select" id="employment_status" name="employment_status" required>
+                                <option value="" disabled selected>Select Employment Status</option>
+                                <option value="Employed" {% if form_data.get('employment_status') == 'Employed' %}selected{% endif %}>Employed</option>
+                                <option value="Self-Employed" {% if form_data.get('employment_status') == 'Self-Employed' %}selected{% endif %}>Self-Employed</option>
+                                <option value="Business" {% if form_data.get('employment_status') == 'Business' %}selected{% endif %}>Business</option>
+                                <option value="Student" {% if form_data.get('employment_status') == 'Student' %}selected{% endif %}>Student</option>
+                                <option value="Unemployed" {% if form_data.get('employment_status') == 'Unemployed' %}selected{% endif %}>Unemployed</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="employment_years" class="form-label">Employment Years <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="employment_years" name="employment_years" min="0" required placeholder="e.g. 5" value="{{ form_data.get('employment_years', '0') }}">
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Financial & Loan Details -->
+                    <div class="profile-section-title d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-sack-dollar text-primary"></i> Financial Information
+                    </div>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="annual_income" class="form-label">Annual Income (₹) <span class="text-danger">*</span></label>
+                            <input type="number" step="0.01" class="form-control" id="annual_income" name="annual_income" min="1" required placeholder="e.g. 600000" value="{{ form_data.get('annual_income', '') }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="loan_amount" class="form-label">Requested Loan Amount (₹) <span class="text-danger">*</span></label>
+                            <input type="number" step="0.01" class="form-control" id="loan_amount" name="loan_amount" min="1" required placeholder="e.g. 200000" value="{{ form_data.get('loan_amount', '') }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="loan_duration_months" class="form-label">Loan Duration (Months) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="loan_duration_months" name="loan_duration_months" min="1" required placeholder="e.g. 24" value="{{ form_data.get('loan_duration_months', '24') }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="existing_debt" class="form-label">Existing Total Debt (₹) <span class="text-danger">*</span></label>
+                            <input type="number" step="0.01" class="form-control" id="existing_debt" name="existing_debt" min="0" required placeholder="e.g. 120000" value="{{ form_data.get('existing_debt', '0') }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="dti_display" class="form-label">Debt-to-Income (DTI) Proxy</label>
+                            <input type="text" class="form-control fw-bold" id="dti_display" readonly value="0.00%">
+                            <div class="form-text small">Calculated Proxy: (Existing Debt / Annual Income) × 100</div>
+                        </div>
+                    </div>
+
+                    <!-- Section 4: Credit History Details -->
+                    <div class="profile-section-title d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-credit-card text-primary"></i> Credit Profile
+                    </div>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-3">
+                            <label for="credit_history_years" class="form-label">Credit History (Years) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="credit_history_years" name="credit_history_years" min="0" required placeholder="e.g. 4" value="{{ form_data.get('credit_history_years', '0') }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="previous_payment_history" class="form-label">Payment History <span class="text-danger">*</span></label>
+                            <select class="form-select" id="previous_payment_history" name="previous_payment_history" required>
+                                <option value="Excellent" {% if form_data.get('previous_payment_history') == 'Excellent' %}selected{% endif %}>Excellent</option>
+                                <option value="Good" {% if form_data.get('previous_payment_history', 'Good') == 'Good' %}selected{% endif %}>Good</option>
+                                <option value="Average" {% if form_data.get('previous_payment_history') == 'Average' %}selected{% endif %}>Average</option>
+                                <option value="Poor" {% if form_data.get('previous_payment_history') == 'Poor' %}selected{% endif %}>Poor</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="number_of_existing_loans" class="form-label">Existing Active Loans <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="number_of_existing_loans" name="number_of_existing_loans" min="0" required value="{{ form_data.get('number_of_existing_loans', '0') }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="number_of_credit_accounts" class="form-label">Total Credit Accounts <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="number_of_credit_accounts" name="number_of_credit_accounts" min="0" required value="{{ form_data.get('number_of_credit_accounts', '1') }}">
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                        <a href="{{ url_for('list_applications') }}" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary px-4 shadow-sm">
+                            <i class="fa-solid fa-check me-1"></i> Submit Application
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

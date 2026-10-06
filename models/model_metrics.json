@@ -1,0 +1,59 @@
+{
+    "accuracy": 78.0,
+    "precision": 79.25,
+    "recall": 78.0,
+    "f1_score": 78.31,
+    "dataset_size": 1000,
+    "algorithm": "Random Forest Classifier",
+    "model_version": "RandomForest-v1.1",
+    "feature_importances": [
+        {
+            "feature": "Payment History",
+            "importance": 21.5
+        },
+        {
+            "feature": "DTI Proxy",
+            "importance": 15.4
+        },
+        {
+            "feature": "Annual Income",
+            "importance": 8.9
+        },
+        {
+            "feature": "Credit History",
+            "importance": 8.9
+        },
+        {
+            "feature": "Existing Debt",
+            "importance": 8.4
+        },
+        {
+            "feature": "Loan Amount",
+            "importance": 8.1
+        },
+        {
+            "feature": "Employment Years",
+            "importance": 6.2
+        },
+        {
+            "feature": "Age",
+            "importance": 5.4
+        },
+        {
+            "feature": "Employment Status",
+            "importance": 5.1
+        },
+        {
+            "feature": "Existing Loans",
+            "importance": 4.5
+        },
+        {
+            "feature": "Credit Accounts",
+            "importance": 4.1
+        },
+        {
+            "feature": "Loan Duration",
+            "importance": 3.5
+        }
+    ]
+}

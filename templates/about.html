@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}About CrediGuard - Credit Risk System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10 col-xl-9">
+        <div class="mb-4">
+            <h2 class="fw-bold mb-1"><i class="fa-solid fa-circle-info text-primary me-2"></i>About CrediGuard Project</h2>
+            <p class="text-muted mb-0">Credit Risk Monitoring & Prediction System.</p>
+        </div>
+
+        <!-- Overview Card -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body p-4">
+                <h4 class="fw-bold text-primary mb-3"><i class="fa-solid fa-bullseye me-2"></i>Project Objective</h4>
+                <p class="lead text-dark">
+                    <strong>CrediGuard</strong> is an integrated Credit Risk Monitoring & Prediction System built to demonstrate how Machine Learning classification algorithms can assist financial decision-support workflows.
+                </p>
+                <p>
+                    The system combines complete CRUD (Create, Read, Update, Delete) operations for applicant financial profiles with a real-time Scikit-Learn Machine Learning inference pipeline (`RandomForestClassifier`), persistent SQLite storage, and dynamic analytical dashboards.
+                </p>
+            </div>
+        </div>
+
+        <!-- System Architecture & Workflow Diagram Card -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white py-3 fw-bold">
+                <i class="fa-solid fa-diagram-project text-primary me-2"></i> System Data Flow Architecture
+            </div>
+            <div class="card-body p-4 text-center">
+                <div class="d-flex flex-wrap justify-content-center align-items-center gap-2 text-center py-2">
+                    <div class="p-3 bg-light border rounded fw-bold text-dark shadow-sm">
+                        <i class="fa-solid fa-user-pen text-primary d-block fs-4 mb-1"></i> Applicant Form Input
+                    </div>
+                    <i class="fa-solid fa-arrow-right text-primary fs-5"></i>
+                    <div class="p-3 bg-light border rounded fw-bold text-dark shadow-sm">
+                        <i class="fa-solid fa-list-check text-info d-block fs-4 mb-1"></i> Form Input Validation
+                    </div>
+                    <i class="fa-solid fa-arrow-right text-primary fs-5"></i>
+                    <div class="p-3 bg-light border rounded fw-bold text-dark shadow-sm">
+                        <i class="fa-solid fa-calculator text-warning d-block fs-4 mb-1"></i> DTI Auto Calculation
+                    </div>
+                    <i class="fa-solid fa-arrow-right text-primary fs-5"></i>
+                    <div class="p-3 bg-light border rounded fw-bold text-dark shadow-sm">
+                        <i class="fa-solid fa-brain text-success d-block fs-4 mb-1"></i> Random Forest ML Model
+                    </div>
+                    <i class="fa-solid fa-arrow-right text-primary fs-5"></i>
+                    <div class="p-3 bg-light border rounded fw-bold text-dark shadow-sm">
+                        <i class="fa-solid fa-chart-column text-danger d-block fs-4 mb-1"></i> Risk Category & Probabilities
+                    </div>
+                    <i class="fa-solid fa-arrow-right text-primary fs-5"></i>
+                    <div class="p-3 bg-light border rounded fw-bold text-dark shadow-sm">
+                        <i class="fa-solid fa-database text-secondary d-block fs-4 mb-1"></i> SQLite Database Log
+                    </div>
+                    <i class="fa-solid fa-arrow-right text-primary fs-5"></i>
+                    <div class="p-3 bg-light border rounded fw-bold text-dark shadow-sm">
+                        <i class="fa-solid fa-gauge-high text-primary d-block fs-4 mb-1"></i> Interactive Dashboard
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Technology Stack Grid -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white py-3 fw-bold">
+                <i class="fa-solid fa-layer-group text-primary me-2"></i> Technology Stack Breakdown
+            </div>
+            <div class="card-body p-4">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 h-100 bg-light">
+                            <h5 class="fw-bold text-primary mb-2"><i class="fa-brands fa-python me-2"></i>Backend & Database</h5>
+                            <ul class="mb-0">
+                                <li><strong>Python 3.10+</strong>: Core application language</li>
+                                <li><strong>Flask Framework</strong>: Lightweight web server & routing</li>
+                                <li><strong>SQLite Database</strong>: Embedded relational data store</li>
+                                <li><strong>SQLAlchemy ORM</strong>: Object-Relational Mapping & cascade relationships</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 h-100 bg-light">
+                            <h5 class="fw-bold text-success mb-2"><i class="fa-solid fa-brain me-2"></i>Machine Learning</h5>
+                            <ul class="mb-0">
+                                <li><strong>Scikit-Learn</strong>: `RandomForestClassifier` ensemble pipeline</li>
+                                <li><strong>ColumnTransformer</strong>: Automated One-Hot Encoding for categorical features</li>
+                                <li><strong>Pandas & NumPy</strong>: Data processing & synthetic dataset generation</li>
+                                <li><strong>Joblib</strong>: Model pipeline serialization (`.pkl`)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="border rounded p-3 bg-light">
+                            <h5 class="fw-bold text-info mb-2"><i class="fa-brands fa-bootstrap me-2"></i>Frontend & UI Components</h5>
+                            <ul class="mb-0">
+                                <li><strong>HTML5 & CSS3</strong>: Clean layout, custom styling, dark navbar accents</li>
+                                <li><strong>Bootstrap 5</strong>: Responsive grid, form components, badges, modals, and alerts</li>
+                                <li><strong>Vanilla JavaScript</strong>: Real-time DTI calculator and DOM event handling</li>
+                                <li><strong>Chart.js</strong>: Dynamic executive dashboard & probability bar graphs</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+{% endblock %}

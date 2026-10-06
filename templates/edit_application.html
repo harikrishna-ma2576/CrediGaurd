@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Application #{{ application.id }} - CrediGuard{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10 col-xl-9">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold mb-1"><i class="fa-solid fa-pen-to-square text-primary me-2"></i>Edit Application #{{ application.id }}</h2>
+                <p class="text-muted mb-0">Update applicant details for <strong>{{ application.full_name }}</strong>.</p>
+            </div>
+            <a href="{{ url_for('application_details', app_id=application.id) }}" class="btn btn-outline-secondary">
+                <i class="fa-solid fa-arrow-left me-1"></i> Cancel & Back
+            </a>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-body p-4">
+                <form method="POST" action="{{ url_for('edit_application', app_id=application.id) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    
+                    <!-- Personal Info -->
+                    <div class="profile-section-title d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-user text-primary"></i> Personal Information
+                    </div>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="full_name" class="form-label">Full Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="full_name" name="full_name" required value="{{ application.full_name }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="age" class="form-label">Age (Years) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="age" name="age" min="18" max="100" required value="{{ application.age }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="gender" class="form-label">Gender <span class="text-danger">*</span></label>
+                            <select class="form-select" id="gender" name="gender" required>
+                                <option value="Male" {% if application.gender == 'Male' %}selected{% endif %}>Male</option>
+                                <option value="Female" {% if application.gender == 'Female' %}selected{% endif %}>Female</option>
+                                <option value="Other" {% if application.gender == 'Other' %}selected{% endif %}>Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Employment Info -->
+                    <div class="profile-section-title d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-briefcase text-primary"></i> Employment Details
+                    </div>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="employment_status" class="form-label">Employment Status <span class="text-danger">*</span></label>
+                            <select class="form-select" id="employment_status" name="employment_status" required>
+                                <option value="Employed" {% if application.employment_status == 'Employed' %}selected{% endif %}>Employed</option>
+                                <option value="Self-Employed" {% if application.employment_status == 'Self-Employed' %}selected{% endif %}>Self-Employed</option>
+                                <option value="Business" {% if application.employment_status == 'Business' %}selected{% endif %}>Business</option>
+                                <option value="Student" {% if application.employment_status == 'Student' %}selected{% endif %}>Student</option>
+                                <option value="Unemployed" {% if application.employment_status == 'Unemployed' %}selected{% endif %}>Unemployed</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="employment_years" class="form-label">Employment Years <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="employment_years" name="employment_years" min="0" required value="{{ application.employment_years }}">
+                        </div>
+                    </div>
+
+                    <!-- Financial Info -->
+                    <div class="profile-section-title d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-sack-dollar text-primary"></i> Financial Information
+                    </div>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="annual_income" class="form-label">Annual Income (₹) <span class="text-danger">*</span></label>
+                            <input type="number" step="0.01" class="form-control" id="annual_income" name="annual_income" min="1" required value="{{ application.annual_income }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="loan_amount" class="form-label">Requested Loan Amount (₹) <span class="text-danger">*</span></label>
+                            <input type="number" step="0.01" class="form-control" id="loan_amount" name="loan_amount" min="1" required value="{{ application.loan_amount }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="loan_duration_months" class="form-label">Loan Duration (Months) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="loan_duration_months" name="loan_duration_months" min="1" required value="{{ application.loan_duration_months }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="existing_debt" class="form-label">Existing Total Debt (₹) <span class="text-danger">*</span></label>
+                            <input type="number" step="0.01" class="form-control" id="existing_debt" name="existing_debt" min="0" required value="{{ application.existing_debt }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="dti_display" class="form-label">Debt-to-Income (DTI) Proxy</label>
+                            <input type="text" class="form-control fw-bold" id="dti_display" readonly value="{{ application.debt_to_income_ratio }}%">
+                        </div>
+                    </div>
+
+                    <!-- Credit Profile -->
+                    <div class="profile-section-title d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-credit-card text-primary"></i> Credit Profile
+                    </div>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-3">
+                            <label for="credit_history_years" class="form-label">Credit History (Years) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="credit_history_years" name="credit_history_years" min="0" required value="{{ application.credit_history_years }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="previous_payment_history" class="form-label">Payment History <span class="text-danger">*</span></label>
+                            <select class="form-select" id="previous_payment_history" name="previous_payment_history" required>
+                                <option value="Excellent" {% if application.previous_payment_history == 'Excellent' %}selected{% endif %}>Excellent</option>
+                                <option value="Good" {% if application.previous_payment_history == 'Good' %}selected{% endif %}>Good</option>
+                                <option value="Average" {% if application.previous_payment_history == 'Average' %}selected{% endif %}>Average</option>
+                                <option value="Poor" {% if application.previous_payment_history == 'Poor' %}selected{% endif %}>Poor</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="number_of_existing_loans" class="form-label">Existing Active Loans <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="number_of_existing_loans" name="number_of_existing_loans" min="0" required value="{{ application.number_of_existing_loans }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="number_of_credit_accounts" class="form-label">Total Credit Accounts <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="number_of_credit_accounts" name="number_of_credit_accounts" min="0" required value="{{ application.number_of_credit_accounts }}">
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                        <a href="{{ url_for('application_details', app_id=application.id) }}" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary px-4 shadow-sm">
+                            <i class="fa-solid fa-floppy-disk me-1"></i> Save Changes
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

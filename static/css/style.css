@@ -1,0 +1,257 @@
+/* CrediGuard Modern Financial UI Design System */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --primary-dark: #0f172a;
+    --secondary-dark: #1e293b;
+    --accent-blue: #3b82f6;
+    --accent-cyan: #06b6d4;
+    --accent-purple: #8b5cf6;
+    
+    --low-risk-color: #059669;
+    --low-risk-bg: #ecfdf5;
+    --low-risk-border: #a7f3d0;
+    
+    --med-risk-color: #d97706;
+    --med-risk-bg: #fffbeb;
+    --med-risk-border: #fde68a;
+    
+    --high-risk-color: #dc2626;
+    --high-risk-bg: #fef2f2;
+    --high-risk-border: #fca5a5;
+
+    --bg-body: #f8fafc;
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+    --card-shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-body);
+    color: #334155;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+/* Glassmorphism & Navbar Styling */
+.navbar {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(10px);
+}
+
+.navbar-brand {
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.nav-link {
+    font-weight: 600;
+    font-size: 0.925rem;
+    color: #94a3b8 !important;
+    transition: all 0.25s ease;
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.85rem !important;
+}
+
+.nav-link:hover, .nav-link.active {
+    color: #38bdf8 !important;
+    background: rgba(56, 189, 248, 0.1);
+}
+
+/* Card Modern Design */
+.card {
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    border-radius: 1rem;
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: #ffffff;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--card-shadow-hover);
+}
+
+/* Stat Cards */
+.stat-card {
+    position: relative;
+    overflow: hidden;
+    border-left: 5px solid var(--accent-blue);
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4));
+    pointer-events: none;
+}
+
+.stat-card.stat-low { border-left-color: var(--low-risk-color); }
+.stat-card.stat-med { border-left-color: var(--med-risk-color); }
+.stat-card.stat-high { border-left-color: var(--high-risk-color); }
+.stat-card.stat-income { border-left-color: var(--accent-cyan); }
+.stat-card.stat-loan { border-left-color: var(--accent-purple); }
+
+.stat-value {
+    font-size: 1.9rem;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+.stat-icon-bg {
+    width: 46px;
+    height: 46px;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+/* Risk Badges */
+.badge-risk-low {
+    background-color: var(--low-risk-bg);
+    color: var(--low-risk-color);
+    border: 1px solid var(--low-risk-border);
+    font-weight: 700;
+    padding: 0.45em 0.8em;
+    border-radius: 2rem;
+}
+
+.badge-risk-medium {
+    background-color: var(--med-risk-bg);
+    color: var(--med-risk-color);
+    border: 1px solid var(--med-risk-border);
+    font-weight: 700;
+    padding: 0.45em 0.8em;
+    border-radius: 2rem;
+}
+
+.badge-risk-high {
+    background-color: var(--high-risk-bg);
+    color: var(--high-risk-color);
+    border: 1px solid var(--high-risk-border);
+    font-weight: 700;
+    padding: 0.45em 0.8em;
+    border-radius: 2rem;
+}
+
+/* Tables Styling */
+.table-custom {
+    background: #ffffff;
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.table th {
+    background-color: #f8fafc;
+    color: #475569;
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    border-bottom: 2px solid #e2e8f0;
+    padding: 1rem 0.75rem;
+}
+
+.table td {
+    padding: 0.9rem 0.75rem;
+    vertical-align: middle;
+}
+
+/* Educational Disclaimer Banner (Disabled) */
+.disclaimer-banner {
+    display: none !important;
+}
+
+/* Detail Profile Cards */
+.profile-section-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0f172a;
+    border-bottom: 2px solid #f1f5f9;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.info-label {
+    font-weight: 700;
+    color: #64748b;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-value {
+    font-weight: 600;
+    color: #0f172a;
+    font-size: 0.95rem;
+}
+
+/* Form Styles */
+.form-label {
+    font-weight: 700;
+    color: #334155;
+    font-size: 0.875rem;
+}
+
+.form-control, .form-select {
+    border-radius: 0.6rem;
+    padding: 0.65rem 0.9rem;
+    border: 1px solid #cbd5e1;
+    font-weight: 500;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+}
+
+/* Buttons */
+.btn-primary {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    border: none;
+    font-weight: 700;
+    border-radius: 0.6rem;
+    padding: 0.6rem 1.25rem;
+    transition: all 0.25s ease;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+}
+
+/* Login Page Styling */
+.login-card-header {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #ffffff;
+    border-radius: 1rem 1rem 0 0 !important;
+}
+
+/* Footer */
+footer {
+    background-color: #0f172a;
+    color: #94a3b8;
+    font-size: 0.875rem;
+}

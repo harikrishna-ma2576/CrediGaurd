@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}Sign In / Register - CrediGuard System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center py-4">
+    <div class="col-md-7 col-lg-5 col-xl-4">
+        <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+            <!-- Mode Switcher Tabs Header -->
+            <div class="card-header bg-light border-0 p-2">
+                <ul class="nav nav-pills nav-justified" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active fw-bold rounded-3 py-2 shadow-sm" href="{{ url_for('login') }}">
+                            <i class="fa-solid fa-right-to-bracket me-2"></i>Login (Existing User)
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-secondary fw-bold rounded-3 py-2" href="{{ url_for('register') }}">
+                            <i class="fa-solid fa-user-plus me-2"></i>Register (New User)
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="card-body p-4 p-sm-5">
+                <div class="text-center mb-4">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-circle p-3 mb-3" style="width: 70px; height: 70px;">
+                        <i class="fa-solid fa-shield-halved fs-1"></i>
+                    </div>
+                    <h3 class="fw-bold text-dark mb-1">Registered User Login</h3>
+                    <p class="text-muted small">Sign in to your existing CrediGuard account with your Email & Password</p>
+                </div>
+
+                <form method="POST" action="{{ url_for('login') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <!-- Email ID Input -->
+                    <div class="mb-3">
+                        <label for="email" class="form-label fw-semibold">Email ID <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted"><i class="fa-solid fa-envelope"></i></span>
+                            <input type="email" class="form-control" id="email" name="email" required placeholder="admin@crediguard.com" value="admin@crediguard.com">
+                        </div>
+                    </div>
+
+                    <!-- Password Input with Eye Toggle -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <label for="password" class="form-label fw-semibold mb-1">Password <span class="text-danger">*</span></label>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted"><i class="fa-solid fa-lock"></i></span>
+                            <input type="password" class="form-control" id="password" name="password" required placeholder="••••••••" value="admin123">
+                            <button type="button" class="btn btn-outline-secondary" id="togglePasswordBtn" title="Show/Hide Password">
+                                <i class="fa-solid fa-eye" id="toggleIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Remember Me -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="rememberMe" checked>
+                            <label class="form-check-label small text-muted" for="rememberMe">Remember me</label>
+                        </div>
+                        <a href="#" class="small text-primary text-decoration-none fw-semibold" onclick="alert('Demo Admin Email: admin@crediguard.com\nDemo Password: admin123'); return false;">Forgot password?</a>
+                    </div>
+
+                    <!-- Sign In Submit Button -->
+                    <div class="d-grid mb-3">
+                        <button type="submit" class="btn btn-primary btn-lg shadow-sm fw-bold">
+                            <i class="fa-solid fa-right-to-bracket me-2"></i> Login to Account
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Quick One-Click Fill Demo Credentials Button -->
+                <div class="alert alert-info py-2 px-3 mb-3 small rounded-3 d-flex align-items-center justify-content-between">
+                    <div>
+                        <i class="fa-solid fa-circle-info text-info me-1"></i>
+                        <strong>Demo Email:</strong> <code>admin@crediguard.com</code><br>
+                        <strong>Password:</strong> <code>admin123</code>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-info text-white fw-bold shadow-sm" id="autoFillBtn">
+                        Fill Demo
+                    </button>
+                </div>
+
+                <div class="text-center pt-3 border-top">
+                    <p class="mb-0 text-muted small">
+                        New user? 
+                        <a href="{{ url_for('register') }}" class="fw-bold text-primary text-decoration-none">Create a new account (Register)</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Toggle Password Visibility
+        const passwordInput = document.getElementById('password');
+        const toggleBtn = document.getElementById('togglePasswordBtn');
+        const toggleIcon = document.getElementById('toggleIcon');
+
+        if (toggleBtn && passwordInput) {
+            toggleBtn.addEventListener('click', function() {
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    toggleIcon.className = 'fa-solid fa-eye-slash';
+                } else {
+                    passwordInput.type = 'password';
+                    toggleIcon.className = 'fa-solid fa-eye';
+                }
+            });
+        }
+
+        // Auto-Fill Demo Credentials Button
+        const autoFillBtn = document.getElementById('autoFillBtn');
+        const emailInput = document.getElementById('email');
+        if (autoFillBtn && emailInput && passwordInput) {
+            autoFillBtn.addEventListener('click', function() {
+                emailInput.value = 'admin@crediguard.com';
+                passwordInput.value = 'admin123';
+            });
+        }
+    });
+</script>
+{% endblock %}

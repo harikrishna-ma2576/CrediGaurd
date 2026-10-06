@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}Credit Applications - CrediGuard{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold mb-1"><i class="fa-solid fa-users text-primary me-2"></i>Credit Applications</h2>
+        <p class="text-muted mb-0">Manage customer loan applications, view profiles, and trigger ML risk predictions.</p>
+    </div>
+    <div>
+        <a href="{{ url_for('add_application') }}" class="btn btn-primary shadow-sm">
+            <i class="fa-solid fa-user-plus me-1"></i> Add New Application
+        </a>
+    </div>
+</div>
+
+<!-- Search & Filter Bar Card -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body bg-white">
+        <form method="GET" action="{{ url_for('list_applications') }}" class="row g-3 align-items-end">
+            <!-- Search Query -->
+            <div class="col-md-4">
+                <label for="searchQuery" class="form-label">Search Applicant Name</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
+                    <input type="text" id="searchQuery" name="q" class="form-control" placeholder="e.g. Aarav Sharma" value="{{ query_param }}">
+                </div>
+            </div>
+
+            <!-- Risk Filter -->
+            <div class="col-md-3">
+                <label for="riskFilter" class="form-label">Filter by Risk Level</label>
+                <select id="riskFilter" name="risk" class="form-select">
+                    <option value="">All Risk Levels</option>
+                    <option value="Low Risk" {% if risk_filter == 'Low Risk' %}selected{% endif %}>Low Risk</option>
+                    <option value="Medium Risk" {% if risk_filter == 'Medium Risk' %}selected{% endif %}>Medium Risk</option>
+                    <option value="High Risk" {% if risk_filter == 'High Risk' %}selected{% endif %}>High Risk</option>
+                </select>
+            </div>
+
+            <!-- Employment Filter -->
+            <div class="col-md-3">
+                <label for="employmentFilter" class="form-label">Filter by Employment</label>
+                <select id="employmentFilter" name="employment" class="form-select">
+                    <option value="">All Employment Types</option>
+                    <option value="Employed" {% if employment_filter == 'Employed' %}selected{% endif %}>Employed</option>
+                    <option value="Self-Employed" {% if employment_filter == 'Self-Employed' %}selected{% endif %}>Self-Employed</option>
+                    <option value="Business" {% if employment_filter == 'Business' %}selected{% endif %}>Business</option>
+                    <option value="Student" {% if employment_filter == 'Student' %}selected{% endif %}>Student</option>
+                    <option value="Unemployed" {% if employment_filter == 'Unemployed' %}selected{% endif %}>Unemployed</option>
+                </select>
+            </div>
+
+            <!-- Actions -->
+            <div class="col-md-2 d-flex gap-2">
+                <button type="submit" class="btn btn-primary w-100 shadow-sm">
+                    <i class="fa-solid fa-filter me-1"></i> Filter
+                </button>
+                <a href="{{ url_for('list_applications') }}" class="btn btn-outline-secondary" title="Clear Filters">
+                    <i class="fa-solid fa-rotate"></i>
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Applications Table -->
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Applicant Name</th>
+                    <th>Age / Gender</th>
+                    <th>Annual Income</th>
+                    <th>Loan Amount</th>
+                    <th>DTI Proxy</th>
+                    <th>Employment</th>
+                    <th>Risk Category</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in applications %}
+                <tr>
+                    <td class="fw-bold text-secondary">#{{ app.id }}</td>
+                    <td>
+                        <a href="{{ url_for('application_details', app_id=app.id) }}" class="fw-bold text-decoration-none text-dark">
+                            {{ app.full_name }}
+                        </a>
+                        <div class="small text-muted">History: {{ app.credit_history_years }} yrs</div>
+                    </td>
+                    <td>{{ app.age }} / {{ app.gender }}</td>
+                    <td class="fw-semibold">{{ app.annual_income | format_currency }}</td>
+                    <td class="fw-semibold text-primary">{{ app.loan_amount | format_currency }}</td>
+                    <td>
+                        <span class="badge {% if app.debt_to_income_ratio > 35 %}bg-danger-subtle text-danger{% elif app.debt_to_income_ratio > 20 %}bg-warning-subtle text-warning-emphasis{% else %}bg-success-subtle text-success{% endif %}">
+                            {{ app.debt_to_income_ratio }}%
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge bg-light text-dark border">{{ app.employment_status }}</span>
+                    </td>
+                    <td>
+                        {% if app.prediction == 'Low Risk' %}
+                            <span class="badge badge-risk-low"><i class="fa-solid fa-circle-check me-1"></i>Low Risk</span>
+                        {% elif app.prediction == 'Medium Risk' %}
+                            <span class="badge badge-risk-medium"><i class="fa-solid fa-triangle-exclamation me-1"></i>Medium Risk</span>
+                        {% elif app.prediction == 'High Risk' %}
+                            <span class="badge badge-risk-high"><i class="fa-solid fa-circle-exclamation me-1"></i>High Risk</span>
+                        {% elif app.prediction == 'Re-evaluation Required' %}
+                            <span class="badge bg-warning-subtle text-warning-emphasis border border-warning"><i class="fa-solid fa-rotate-right me-1"></i>Re-evaluation</span>
+                        {% else %}
+                            <span class="badge bg-secondary-subtle text-secondary">Not Predicted</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end">
+                        <div class="btn-group btn-group-sm">
+                            <a href="{{ url_for('application_details', app_id=app.id) }}" class="btn btn-outline-secondary" title="View Profile">
+                                <i class="fa-solid fa-eye"></i> View
+                            </a>
+                            <a href="{{ url_for('edit_application', app_id=app.id) }}" class="btn btn-outline-secondary" title="Edit Application">
+                                <i class="fa-solid fa-pen-to-square"></i> Edit
+                            </a>
+                            <a href="{{ url_for('predict', app_id=app.id) }}" class="btn btn-outline-primary" title="View Risk Prediction">
+                                <i class="fa-solid fa-brain"></i> Predict
+                            </a>
+                            <form method="POST" action="{{ url_for('delete_application', app_id=app.id) }}" class="d-inline delete-app-form" data-app-name="{{ app.full_name }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <button type="submit" class="btn btn-outline-danger" title="Delete Application">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="9" class="text-center py-5 text-muted">
+                        <i class="fa-solid fa-folder-open fs-1 text-secondary mb-3 d-block"></i>
+                        <h5>No Application Records Found</h5>
+                        <p class="mb-0">Try adjusting your search criteria or add a new application.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

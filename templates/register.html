@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Register Account - CrediGuard System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center py-4">
+    <div class="col-md-7 col-lg-5 col-xl-4">
+        <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+            <!-- Mode Switcher Tabs Header -->
+            <div class="card-header bg-light border-0 p-2">
+                <ul class="nav nav-pills nav-justified" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link text-secondary fw-bold rounded-3 py-2" href="{{ url_for('login') }}">
+                            <i class="fa-solid fa-right-to-bracket me-2"></i>Login (Existing User)
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active fw-bold rounded-3 py-2 shadow-sm" href="{{ url_for('register') }}">
+                            <i class="fa-solid fa-user-plus me-2"></i>Register (New User)
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="card-body p-4 p-sm-5">
+                <div class="text-center mb-4">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-circle p-3 mb-3" style="width: 70px; height: 70px;">
+                        <i class="fa-solid fa-user-plus fs-1"></i>
+                    </div>
+                    <h3 class="fw-bold text-dark mb-1">New User Registration</h3>
+                    <p class="text-muted small">Create a new CrediGuard account with your Email & Password</p>
+                </div>
+
+                <form method="POST" action="{{ url_for('register') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    
+                    <!-- 1. Full Name -->
+                    <div class="mb-3">
+                        <label for="full_name" class="form-label fw-semibold">Full Name <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted"><i class="fa-solid fa-user"></i></span>
+                            <input type="text" class="form-control" id="full_name" name="full_name" required placeholder="e.g. Rahul Sharma" value="{{ full_name or '' }}">
+                        </div>
+                    </div>
+
+                    <!-- 2. Email ID -->
+                    <div class="mb-3">
+                        <label for="email" class="form-label fw-semibold">Email ID <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted"><i class="fa-solid fa-envelope"></i></span>
+                            <input type="email" class="form-control" id="email" name="email" required placeholder="rahul@example.com" value="{{ email or '' }}">
+                        </div>
+                    </div>
+
+                    <!-- 3. Password -->
+                    <div class="mb-3">
+                        <label for="password" class="form-label fw-semibold">Password <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted"><i class="fa-solid fa-lock"></i></span>
+                            <input type="password" class="form-control" id="password" name="password" required placeholder="At least 6 characters" minlength="6">
+                            <button type="button" class="btn btn-outline-secondary" id="togglePassBtn1" title="Show/Hide Password">
+                                <i class="fa-solid fa-eye" id="toggleIcon1"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 4. Confirm Password -->
+                    <div class="mb-4">
+                        <label for="confirm_password" class="form-label fw-semibold">Confirm Password <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted"><i class="fa-solid fa-key"></i></span>
+                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" required placeholder="Re-enter password" minlength="6">
+                        </div>
+                    </div>
+
+                    <!-- Submit Register Button -->
+                    <div class="d-grid mb-3">
+                        <button type="submit" class="btn btn-primary btn-lg shadow-sm fw-bold">
+                            <i class="fa-solid fa-user-check me-2"></i> Register & Create Account
+                        </button>
+                    </div>
+                </form>
+
+                <div class="text-center mt-3 pt-3 border-top">
+                    <p class="mb-0 text-muted small">
+                        Already registered? 
+                        <a href="{{ url_for('login') }}" class="fw-bold text-primary text-decoration-none">Sign In to your account (Login)</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Toggle Password Visibility
+        const passInput = document.getElementById('password');
+        const confirmInput = document.getElementById('confirm_password');
+        const toggleBtn = document.getElementById('togglePassBtn1');
+        const toggleIcon = document.getElementById('toggleIcon1');
+
+        if (toggleBtn && passInput) {
+            toggleBtn.addEventListener('click', function() {
+                if (passInput.type === 'password') {
+                    passInput.type = 'text';
+                    if (confirmInput) confirmInput.type = 'text';
+                    toggleIcon.className = 'fa-solid fa-eye-slash';
+                } else {
+                    passInput.type = 'password';
+                    if (confirmInput) confirmInput.type = 'password';
+                    toggleIcon.className = 'fa-solid fa-eye';
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

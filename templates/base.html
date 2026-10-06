@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CrediGuard - Credit Risk Monitoring & Prediction System{% endblock %}</title>
+
+    <!-- Bootstrap 5 CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons CDN -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="{{ url_for('dashboard') }}">
+                <i class="fa-solid fa-shield-halved text-info fs-4"></i>
+                <span class="fs-5">CrediGuard</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint in ['dashboard', 'index'] %}active{% endif %}" href="{{ url_for('dashboard') }}">
+                            <i class="fa-solid fa-chart-line me-1"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'list_applications' %}active{% endif %}" href="{{ url_for('list_applications') }}">
+                            <i class="fa-solid fa-users me-1"></i> Applications
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'add_application' %}active{% endif %}" href="{{ url_for('add_application') }}">
+                            <i class="fa-solid fa-user-plus me-1"></i> Add Application
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'prediction_history' %}active{% endif %}" href="{{ url_for('prediction_history') }}">
+                            <i class="fa-solid fa-clock-rotate-left me-1"></i> Prediction History
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'about' %}active{% endif %}" href="{{ url_for('about') }}">
+                            <i class="fa-solid fa-circle-info me-1"></i> About
+                        </a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="text-light small d-none d-md-block">
+                        <i class="fa-solid fa-brain text-info me-1"></i>
+                        <span>ML Model: <strong>Random Forest</strong></span>
+                    </div>
+                    {% if session.get('user_id') %}
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-secondary-subtle text-light border me-1">
+                                <i class="fa-solid fa-user-shield text-info me-1"></i>{{ session.get('username') }}
+                            </span>
+                            <a href="{{ url_for('logout') }}" class="btn btn-sm btn-outline-danger">
+                                <i class="fa-solid fa-right-from-bracket me-1"></i> Logout
+                            </a>
+                        </div>
+                    {% else %}
+                        <a href="{{ url_for('login') }}" class="btn btn-sm btn-outline-info">
+                            <i class="fa-solid fa-right-to-bracket me-1"></i> Sign In
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+
+    <!-- Flash Notifications -->
+    <div class="container-fluid px-4 mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm" role="alert">
+                        <i class="fa-solid {% if category == 'success' %}fa-circle-check{% elif category == 'danger' %}fa-circle-xmark{% else %}fa-circle-info{% endif %} me-2"></i>
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="container-fluid px-4 py-3">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-3 mt-4 border-top">
+        <div class="container-fluid px-4 d-flex flex-column flex-sm-row align-items-center justify-content-between text-muted">
+            <div>
+                &copy; 2026 CrediGuard System &bull; Credit Risk Monitoring & Prediction System
+            </div>
+            <div>
+                Built with Python, Flask, SQLite, Scikit-Learn & Bootstrap 5
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS Script -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

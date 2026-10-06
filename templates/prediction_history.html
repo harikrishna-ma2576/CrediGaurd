@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Prediction History Log - CrediGuard{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold mb-1"><i class="fa-solid fa-clock-rotate-left text-primary me-2"></i>Prediction Audit History</h2>
+        <p class="text-muted mb-0">Historical log of all Machine Learning credit risk inferences executed across applications.</p>
+    </div>
+</div>
+
+<!-- Search & Filter Bar Card -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body bg-white">
+        <form method="GET" action="{{ url_for('prediction_history') }}" class="row g-3 align-items-end">
+            <div class="col-md-5">
+                <label for="searchQuery" class="form-label">Search Applicant Name</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
+                    <input type="text" id="searchQuery" name="q" class="form-control" placeholder="Search by name..." value="{{ query_param }}">
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <label for="riskFilter" class="form-label">Filter by Predicted Risk</label>
+                <select id="riskFilter" name="risk" class="form-select">
+                    <option value="">All Risk Categories</option>
+                    <option value="Low Risk" {% if risk_filter == 'Low Risk' %}selected{% endif %}>Low Risk</option>
+                    <option value="Medium Risk" {% if risk_filter == 'Medium Risk' %}selected{% endif %}>Medium Risk</option>
+                    <option value="High Risk" {% if risk_filter == 'High Risk' %}selected{% endif %}>High Risk</option>
+                </select>
+            </div>
+
+            <div class="col-md-3 d-flex gap-2">
+                <button type="submit" class="btn btn-primary w-100 shadow-sm">
+                    <i class="fa-solid fa-filter me-1"></i> Filter Logs
+                </button>
+                <a href="{{ url_for('prediction_history') }}" class="btn btn-outline-secondary" title="Reset Filters">
+                    <i class="fa-solid fa-rotate"></i>
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- History Table Card -->
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Log ID</th>
+                    <th>Assessment Date</th>
+                    <th>Applicant Name</th>
+                    <th>Predicted Risk</th>
+                    <th>Low %</th>
+                    <th>Medium %</th>
+                    <th>High %</th>
+                    <th>Model Version</th>
+                    <th class="text-end">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log, app in records %}
+                <tr>
+                    <td class="fw-bold text-secondary">#{{ log.id }}</td>
+                    <td>{{ log.predicted_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                    <td class="fw-semibold">
+                        <a href="{{ url_for('application_details', app_id=app.id) }}" class="text-decoration-none text-dark">
+                            {{ app.full_name }}
+                        </a>
+                        <span class="text-muted small ms-1">(App #{{ app.id }})</span>
+                    </td>
+                    <td>
+                        {% if log.predicted_risk == 'Low Risk' %}
+                            <span class="badge badge-risk-low"><i class="fa-solid fa-circle-check me-1"></i>Low Risk</span>
+                        {% elif log.predicted_risk == 'Medium Risk' %}
+                            <span class="badge badge-risk-medium"><i class="fa-solid fa-triangle-exclamation me-1"></i>Medium Risk</span>
+                        {% else %}
+                            <span class="badge badge-risk-high"><i class="fa-solid fa-circle-exclamation me-1"></i>High Risk</span>
+                        {% endif %}
+                    </td>
+                    <td><span class="text-success fw-bold">{{ log.low_probability }}%</span></td>
+                    <td><span class="text-warning-emphasis fw-bold">{{ log.medium_probability }}%</span></td>
+                    <td><span class="text-danger fw-bold">{{ log.high_probability }}%</span></td>
+                    <td><span class="badge bg-light text-dark border"><i class="fa-solid fa-code-branch me-1 text-muted"></i>{{ log.model_version or 'RandomForest-v1.1' }}</span></td>
+                    <td class="text-end">
+                        <a href="{{ url_for('predict', app_id=app.id) }}" class="btn btn-sm btn-outline-primary" title="View Prediction Output">
+                            <i class="fa-solid fa-eye me-1"></i> View Result
+                        </a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="9" class="text-center py-5 text-muted">
+                        <i class="fa-solid fa-clock-rotate-left fs-1 text-secondary mb-3 d-block"></i>
+                        <h5>No Historical Prediction Records Found</h5>
+                        <p class="mb-0">Run a prediction on an application to generate audit logs.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
